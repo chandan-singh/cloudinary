@@ -25,6 +25,11 @@ You can now upload a stream of data via the c_upload_stream template and view pr
 $ mrt add cloudinary
 ```
 
+For Meteor version 0.9 and above use:
+``` sh
+meteor add lepozepo:cloudinary
+```
+
 ## How to upload
 
 ### Step 1
@@ -131,6 +136,46 @@ Meteor.call("cloudinary_delete","public_id",function(e,r){
 });
 ```
 
+## Usage with Semantic-UI
+Add following css style:
+``` css
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+```
+
+``` html
+<!-- Stylized Semantic-UI Upload Button -->
+<div class="fileUpload ui compact labeled icon button yellow">
+  <i class="upload icon"></i>
+  Upload
+  {{#c_upload_stream callback="save_url"}}
+    <input type="file" class="upload" />
+  {{/c_upload_stream}}
+</div>
+
+<!-- Show Semantinc-UI Progress bar -->
+{{#each c.uploading_images}}
+  <div class="ui active progress" data-percent="{{percent_uploaded}}">
+    <div class="bar" style="transition-duration: 300ms; -webkit-transition-duration: 300ms; width: {{percent_uploaded}}%;">
+    </div>
+    <div class="label">Uploading ...</div>
+  </div>
+{{/each}}
+```
 
 ## Notes
 
@@ -138,3 +183,5 @@ This package is not intrusive on your database. It uses meteor-stream to connect
 
 I still need to add more configuration options and better error handling.
 
+## Known Compatibility Issues
+* If your project has matteodem:easy-security package installed `meteor add matteodem:easy-security` then, in some scenarios, you would notice that call to callback function is failing. For example, `save_url` call may fail. It appears to be caused by [meteor-easy-security#20](https://github.com/matteodem/meteor-easy-security/issues/20).
